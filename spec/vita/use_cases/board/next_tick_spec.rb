@@ -6,7 +6,7 @@ RSpec.describe Vita::UseCases::Board::NextTick do
 
     it 'receives a board as argument' do
       expect{described_class.new.call}.to raise_error
-      expect{described_class.new(board: board).call}.to_not raise_error
+      expect{described_class.new(board: board)}.to_not raise_error
     end
 
     it 'updates the state of the board' do
@@ -23,7 +23,8 @@ RSpec.describe Vita::UseCases::Board::NextTick do
       it 'calls Vita::UseCases::Cell::ApplyRules' do
         cell = Vita::Entities::Cell.new
         allow(board.state).to receive(:each).and_yield(cell)
-        allow_any_instance_of(Vita::UseCases::Cell::ApplyRules).to receive(:call).with(cell: cell, alive_neighbors: 1).and_return(cell)
+        allow(board).to receive_message_chain(:neighbors_alive, :count).and_return(4)
+        allow_any_instance_of(Vita::UseCases::Cell::ApplyRules).to receive(:call).with(cell: cell, alive_neighbors: 4).and_return(cell)
 
         described_class.new(board: board).call
       end
