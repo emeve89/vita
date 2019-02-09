@@ -12,14 +12,18 @@ RSpec.describe Vita::UseCases::Game::Start do
   it 'calls Vita::UseCases::Board::NextTick' do
     allow_any_instance_of(described_class).to receive(:loop).and_yield
     allow(presenter).to receive(:call).once
-    expect(Vita::UseCases::Board::NextTick).to receive_message_chain(:new, :call)
+    board = double('board', state: [])
+    allow_any_instance_of(Vita::Entities::Board).to receive(:state)
+    expect(Vita::UseCases::Board::NextTick).to receive_message_chain(:new, :call).and_return(board)
     described_class.new(presenter: presenter).call
   end
 
   it 'calls the presenter' do
     allow_any_instance_of(described_class).to receive(:loop).and_yield
-    expect(Vita::UseCases::Board::NextTick).to receive_message_chain(:new, :call)
-    expect(presenter).to receive(:call).once
+    allow_any_instance_of(Vita::Entities::Board).to receive(:state)
+    board = double('board', state: [])
+    expect(Vita::UseCases::Board::NextTick).to receive_message_chain(:new, :call).and_return(board)
+    allow(presenter).to receive(:call).once
     described_class.new(presenter: presenter).call
   end
 end

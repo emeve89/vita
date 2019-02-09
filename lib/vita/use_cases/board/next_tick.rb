@@ -4,16 +4,15 @@ module Vita
       class NextTick
         def initialize(board:)
           @board = board
+          @updated_state = []
         end
 
         def call
-          @updated_state = []
-          @board.state.each do |cell|
-            alive_neighbors = 1
+          @board.state.each_with_index do |cell, index|
+            alive_neighbors = @board.neighbors_alive(index).count
             @updated_state << Vita::UseCases::Cell::ApplyRules.new.call(cell: cell, alive_neighbors: alive_neighbors)
           end
-          @board.state = @updated_state
-          return @board
+          @board.tap { |board| board.state = @updated_state }
         end
       end
     end
