@@ -6,7 +6,7 @@ module Vita
       def initialize
         rows = 10
         cols = 10
-        @state = Array.new(rows) { Array.new(cols) { Vita::Entities::Cell.new } }
+        @state = Array.new(100) { Vita::Entities::Cell.new }
       end
 
     end
